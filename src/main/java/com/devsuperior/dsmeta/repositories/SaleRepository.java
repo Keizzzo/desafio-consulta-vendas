@@ -1,6 +1,9 @@
 package com.devsuperior.dsmeta.repositories;
 
+import com.devsuperior.dsmeta.dto.ReportSalesProjection;
 import com.devsuperior.dsmeta.dto.SellerSalesSummary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.devsuperior.dsmeta.entities.Sale;
@@ -25,4 +28,22 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             @Param("endDate") LocalDate endDate
     );
 
+    @Query(value = """
+            SELECT sales.ID, sales.DATE, sales.AMOUNT, seller.NAME FROM TB_SALES AS sales
+            INNER JOIN TB_SELLER AS seller ON sales.SELLER_ID = seller.ID
+            WHERE LOWER(seller.NAME) LIKE LOWER(CONCAT('%', :name, '%'))
+            AND sales.DATE BETWEEN :startDate AND :endDate
+    """,
+            countQuery = """
+        SELECT COUNT(*)
+        FROM TB_SALES AS sales
+        INNER JOIN TB_SELLER AS seller ON sales.SELLER_ID = seller.ID
+        WHERE (:name = '' OR LOWER(seller.NAME) LIKE LOWER(CONCAT('%', :name, '%')))
+          AND sales.DATE BETWEEN :startDate AND :endDate
+        """,
+            nativeQuery = true)
+    Page<ReportSalesProjection> findReportSales(@Param("name") String name,
+                                                @Param("startDate") LocalDate startDateStr,
+                                                @Param("endDate") LocalDate endDateStr,
+                                                Pageable pageable);
 }
