@@ -29,18 +29,18 @@ public class SaleController {
 
 	@GetMapping(value = "/report")
 	public ResponseEntity<Page<ReportSalesDTO>> getReport(@RequestParam(defaultValue = "") String name,
-														  @RequestParam(required = false) String startDate,
-														  @RequestParam(required = false) String endDate,
+														  @RequestParam(required = false) String minDate,
+														  @RequestParam(required = false) String maxDate,
 														  Pageable pageable) {
-		Page<ReportSalesDTO> result = service.findReportSales(name, startDate, endDate, pageable);
+		Page<ReportSalesDTO> result = service.findReportSales(name, minDate, maxDate, pageable);
 		return ResponseEntity.ok(result);
 	}
 
 	@GetMapping(value = "/summary")
 	public ResponseEntity<List<SellerSalesSummaryDTO>> getSummary(@RequestParam(defaultValue = "") String name,
-																  @RequestParam(required = false) String startDate,
-																  @RequestParam(required = false) String endDate) {
-		List<SellerSalesSummaryDTO> result = service.findSalesBySellerNameAndDateRange(name, startDate, endDate);
+																  @RequestParam(required = false) String minDate,
+																  @RequestParam(required = false) String maxDate) {
+		List<SellerSalesSummaryDTO> result = service.findSalesBySellerNameAndDateRange(name, minDate, maxDate);
 		return ResponseEntity.ok(result);
 	}
 }

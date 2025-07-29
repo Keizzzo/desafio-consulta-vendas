@@ -29,7 +29,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     );
 
     @Query(value = """
-            SELECT sales.ID, sales.DATE, sales.AMOUNT, seller.NAME FROM TB_SALES AS sales
+            SELECT sales.ID, sales.DATE, sales.AMOUNT, seller.NAME as sellerName FROM TB_SALES AS sales
             INNER JOIN TB_SELLER AS seller ON sales.SELLER_ID = seller.ID
             WHERE LOWER(seller.NAME) LIKE LOWER(CONCAT('%', :name, '%'))
             AND sales.DATE BETWEEN :startDate AND :endDate
